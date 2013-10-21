@@ -38,13 +38,13 @@ include_directories(include
 add_library(${PROJECT_NAME} src/gazebo_ros_control_plugin.cpp)
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
 
-add_library(default_robot_hw_sim src/default_robot_hw_sim.cpp)
-target_link_libraries(default_robot_hw_sim ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+## add_library(default_robot_hw_sim src/default_robot_hw_sim.cpp)
+## target_link_libraries(default_robot_hw_sim ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
 
 ## Install
-install(TARGETS ${PROJECT_NAME} default_robot_hw_sim
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  )
+## install(TARGETS ${PROJECT_NAME} default_robot_hw_sim
+##   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+##   )
 
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}

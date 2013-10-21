@@ -22,6 +22,7 @@
  * Date: 29 July 2013
  */
 
+#include <algorithm>
 #include <gazebo_plugins/gazebo_ros_planar_move.h>
 
 namespace gazebo 
@@ -160,13 +161,26 @@ namespace gazebo
   void GazeboRosPlanarMove::UpdateChild() 
   {
     boost::mutex::scoped_lock scoped_lock(lock);
+
     math::Pose pose = parent_->GetWorldPose();
     float yaw = pose.rot.GetYaw();
+    float roll = pose.rot.GetRoll();
+    float pitch = pose.rot.GetPitch();
+    float z_correction = -pose.pos.z;
+    float roll_correction = -roll;
+    float pitch_correction = -pitch;
+    z_correction = std::max(z_correction, -1.0f);
+    z_correction = std::min(z_correction, 1.0f);
+    roll_correction = std::max(roll_correction, -1.0f);
+    roll_correction = std::min(roll_correction, 1.0f);
+    pitch_correction = std::max(pitch_correction, -1.0f);
+    pitch_correction = std::min(pitch_correction, 1.0f);
     parent_->SetLinearVel(math::Vector3(
           x_ * cosf(yaw) - y_ * sinf(yaw), 
           y_ * cosf(yaw) + x_ * sinf(yaw), 
-          0));
-    parent_->SetAngularVel(math::Vector3(0, 0, rot_));
+          z_correction));
+    parent_->SetAngularVel(math::Vector3(roll_correction, pitch_correction, rot_));
+
     if (odometry_rate_ > 0.0) {
       common::Time current_time = parent_->GetWorld()->GetSimTime();
       double seconds_since_last_update = 
